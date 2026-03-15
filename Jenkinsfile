@@ -39,6 +39,8 @@ pipeline {
                     script: '''
                     if (BUILD_LIB_COCOS == "ENABLED") {
                         return ["v213", "v373"]
+                    } else {
+                        return []
                     }
                     '''
                 ]
