@@ -10,10 +10,10 @@ pipeline {
             branchFilter: 'origin/(.*)',
             defaultValue: 'main',
             description: 'Select the branch to build',
-            selectedValue: 'none',
+            selectedValue: 'NONE',
             sortMode: 'ASCENDING_SMART',
             useRepository: PROJECT_REPO_URL,
-            quickFilter: true,
+            quickFilterEnabled: true,
             listSize: '5',
         )
     }
