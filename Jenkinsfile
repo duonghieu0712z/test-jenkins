@@ -29,7 +29,7 @@ pipeline {
             )
         )
         reactiveChoice(
-            name: 'CHOICE_REACT',
+            name: 'BUILD_OPTIONS',
             choiceType: 'PT_CHECKBOX',
             referencedParameters: 'CHOICE_VAR',
             script: groovyScript(
@@ -67,17 +67,20 @@ pipeline {
         stage('Build') {
             steps {
                 echo "Building branch: ${params.BRANCH}"
-                if (params.BUILD_LIB_COCOS.contains('ENABLED')) {
-                    echo 'Building with Cocos library enabled'
-                } else {
-                    echo 'Building without Cocos library'
-                }
+                script {
+                    if (params.BUILD_LIB_COCOS.contains('ENABLED')) {
+                        echo 'Building with Cocos library...'
+                    } else {
+                        echo 'Building without Cocos library...'
+                    }
 
-                if (params.CHOICE_REACT.contains('IOS')) {
-                    echo 'Building for iOS'
-                }
-                if (params.CHOICE_REACT.contains('ANDROID')) {
-                    echo 'Building for Android'
+                    if (params.BUILD_OPTIONS.contains('IOS')) {
+                        echo 'Building for iOS...'
+                    }
+
+                    if (params.BUILD_OPTIONS.contains('ANDROID')) {
+                        echo 'Building for Android...'
+                    }
                 }
             }
         }
