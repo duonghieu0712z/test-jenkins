@@ -77,17 +77,19 @@ pipeline {
             referencedParameters: 'BUILD_LIB_COCOS',
             script: groovyScript(
                 script: '''
-                def cocosVersions = ["v213", "v373"]
-                def buildPlatforms = ["BUILD_IOS", "BUILD_ANDROID"]
+                def cocosVersions = ['v213', 'v373']
+                def buildPlatforms = ['BUILD_IOS', 'BUILD_ANDROID']
 
                 StringBuilder html = new StringBuilder()
 
-                html.append("<div style="padding: 10px;">")
-                if (BUILD_LIB_COCOS == "ENABLED") {
+                html.append('<div style="padding: 10px;">')
+
+                if (BUILD_LIB_COCOS == 'ENABLED') {
                     html.append('<label style="font-weight: bold;">COCOS_VERSION:</label><br/>')
                     html.append('<select name="value" style="margin-bottom: 10px; padding: 5px;">')
                     cocosVersions.each { ver ->
-                        html.append("<option value=\"${ver}\">${ver}</option>")
+                        // Sử dụng nháy kép để cho phép nội suy biến ${ver}
+                        html.append("<option value='${ver}'>${ver}</option>")
                     }
                     html.append('</select><br/>')
                 } else {
@@ -95,10 +97,11 @@ pipeline {
                     html.append('<input type="checkbox" name="value" value="true">USE_EMBED_CORE<br/>')
                 }
 
-                activePlatforms.each { plat ->
+                buildPlatforms.each { plat ->
                     html.append("<label style='font-weight: bold;'>${plat}:</label><br/>")
-                    html.append("<input type=\"checkbox\" name=\"value\" value=\"${plat}\"> ${plat} <br/>")
+                    html.append("<input type='checkbox' name='value' value='${plat}'> ${plat} <br/>")
                 }
+
                 html.append('</div>')
 
                 return html.toString()
