@@ -21,14 +21,27 @@ pipeline {
             listSize: '5',
         )
 
-        booleanParam 'BOOLEAN_VAR'
-        reactiveChoice choiceType: 'PT_CHECKBOX', filterLength: 1, filterable: false, name: 'BOOLEAN_REACT', randomName: 'choice-parameter-24514683991800', referencedParameters: 'BOOLEAN_VAR', script: groovyScript(fallbackScript: [classpath: [], oldScript: '', sandbox: true, script: ''], script: [classpath: [], oldScript: '', sandbox: true, script: '''if (BOOLEAN_VAR == true) {
-    return [\'IOS\', \'ANDROID\']
-}'''])
-        activeChoice choiceType: 'PT_CHECKBOX', filterLength: 1, filterable: false, name: 'CHOICE_VAR', randomName: 'choice-parameter-24514688876700', script: groovyScript(fallbackScript: [classpath: [], oldScript: '', sandbox: true, script: ''], script: [classpath: [], oldScript: '', sandbox: true, script: 'return [\'ENABLED\']'])
-        reactiveChoice choiceType: 'PT_CHECKBOX', filterLength: 1, filterable: false, name: 'CHOICE_REACT', randomName: 'choice-parameter-24514691253300', referencedParameters: 'CHOICE_VAR', script: groovyScript(fallbackScript: [classpath: [], oldScript: '', sandbox: true, script: ''], script: [classpath: [], oldScript: '', sandbox: true, script: '''if (CHOICE_VAR == \'ENABLED\') {
-    return [\'IOS\', \'ANDROID\']
-}'''])
+        activeChoice(
+            name: 'BUILD_LIB_COCOS',
+            choiceType: 'PT_CHECKBOX',
+            script: groovyScript(
+                script: [sandbox: true, script: 'return [\'ENABLED\']']
+            )
+        )
+        reactiveChoice(
+            name: 'CHOICE_REACT',
+            choiceType: 'PT_CHECKBOX',
+            referencedParameters: 'CHOICE_VAR',
+            script: groovyScript(
+                script: [
+                    sandbox: true,
+                    script: '''
+                    if (CHOICE_VAR == \'ENABLED\') {
+                        return [\'IOS\', \'ANDROID\']
+                    } else {'''
+                ]
+            )
+        )
     }
 
     stages {
@@ -44,7 +57,9 @@ pipeline {
                     $class: 'GitSCM',
                     branches: [[name: "*/${params.BRANCH}"]],
                     userRemoteConfigs: [[url: PROJECT_REPO_URL]],
-                    extensions: [[$class: 'CloneOption', noTags: false, reference: '', shallow: true, depth: 1, timeout: 4]],
+                    extensions: [
+                        [$class: 'CloneOption', noTags: false, reference: '', shallow: true, depth: 1, timeout: 4],
+                    ],
                 ])
             }
         }
@@ -59,4 +74,13 @@ pipeline {
 
 def cleanws() {
     cleanWs()
+    dir("${WORKSPACE}@tmp") {
+        deleteDir()
+    }
+    dir("${WORKSPACE}@script") {
+        deleteDir()
+    }
+    dir("${WORKSPACE}@script@tmp") {
+        deleteDir()
+    }
 }
