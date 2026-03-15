@@ -31,14 +31,15 @@ pipeline {
         reactiveChoice(
             name: 'BUILD_OPTIONS',
             choiceType: 'PT_CHECKBOX',
-            referencedParameters: 'CHOICE_VAR',
+            referencedParameters: 'BUILD_LIB_COCOS',
             script: groovyScript(
                 script: [
                     sandbox: true,
                     script: '''
-                    if (CHOICE_VAR == \'ENABLED\') {
+                    if (BUILD_LIB_COCOS == \'ENABLED\') {
                         return [\'IOS\', \'ANDROID\']
-                    } else {'''
+                    }
+                    '''
                 ]
             )
         )
