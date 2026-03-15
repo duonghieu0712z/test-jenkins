@@ -81,7 +81,7 @@ pipeline {
             defaultValue: true
         )
 
-        stringParam(
+        string(
             name: 'RELEASE_NOTES',
             description: 'Release notes',
         )
