@@ -3,7 +3,7 @@ def PROJECT_REPO_URL = 'https://github.com/duonghieu0712z/kosmos.git'
 pipeline {
     agent any
 
-    trigger {
+    triggers {
         githubPush()
     }
 
