@@ -55,19 +55,54 @@ pipeline {
             defaultValue: false
         )
 
-        reactiveChoice(
+        // reactiveChoice(
+        //     name: 'BUILD_OPTIONS',
+        //     choiceType: 'PT_CHECKBOX',
+        //     referencedParameters: 'BUILD_LIB_COCOS',
+        //     script: groovyScript(
+        //         script: [
+        //             sandbox: true,
+        //             script: '''
+        //             if (BUILD_LIB_COCOS == "ENABLED") {
+        //                 return ["IOS", "ANDROID"]
+        //             }
+        //             '''
+        //         ]
+        //     )
+        // )
+
+        activeChoiceHtml(
             name: 'BUILD_OPTIONS',
-            choiceType: 'PT_CHECKBOX',
+            choiceType: 'ET_FORMATTED_HTML',
             referencedParameters: 'BUILD_LIB_COCOS',
             script: groovyScript(
-                script: [
-                    sandbox: true,
-                    script: '''
-                    if (BUILD_LIB_COCOS == "ENABLED") {
-                        return ["IOS", "ANDROID"]
+                script: '''
+                def cocosVersions = ["v213", "v373"]
+                def buildPlatforms = ["BUILD_IOS", "BUILD_ANDROID"]
+
+                StringBuilder html = new StringBuilder()
+
+                html.append("<div style="padding: 10px;">")
+                if (BUILD_LIB_COCOS == "ENABLED") {
+                    html.append('<label style="font-weight: bold;">COCOS_VERSION:</label><br/>')
+                    html.append('<select name="value" style="margin-bottom: 10px; padding: 5px;">')
+                    cocosVersions.each { ver ->
+                        html.append("<option value=\"${ver}\">${ver}</option>")
                     }
-                    '''
-                ]
+                    html.append('</select><br/>')
+                } else {
+                    html.append('<label style="font-weight: bold;">USE_EMBED_CORE:</label><br/>')
+                    html.append('<input type="checkbox" name="value" value="true">USE_EMBED_CORE<br/>')
+                }
+
+                activePlatforms.each { plat ->
+                    html.append("<label style='font-weight: bold;'>${plat}:</label><br/>")
+                    html.append("<input type=\"checkbox\" name=\"value\" value=\"${plat}\"> ${plat} <br/>")
+                }
+                html.append('</div>')
+
+                return html.toString()
+                '''
             )
         )
 
@@ -117,13 +152,7 @@ pipeline {
                         echo 'Building without Cocos library...'
                     }
 
-                    if (params.BUILD_OPTIONS.contains('IOS')) {
-                        echo 'Building for iOS...'
-                    }
-
-                    if (params.BUILD_OPTIONS.contains('ANDROID')) {
-                        echo 'Building for Android...'
-                    }
+                    echo "Build options: ${params.BUILD_OPTIONS}"
 
                     if (params.IS_BUILD_RELEASE) {
                         echo 'Building release...'
