@@ -79,38 +79,38 @@ pipeline {
                 script: [
                     sandbox: true,
                     script: '''
-                    def cocosVersions = ['v213', 'v373']
-                    def buildPlatforms = ['BUILD_IOS', 'BUILD_ANDROID']
+                        def cocosVersions = ['v213', 'v373']
+                        def buildPlatforms = ['BUILD_IOS', 'BUILD_ANDROID']
 
-                    StringBuilder html = new StringBuilder()
+                        StringBuilder html = new StringBuilder()
 
-                    html.append('<div style="padding: 10px;">')
-
-                    if (BUILD_LIB_COCOS == 'ENABLED') {
-                        html.append('<label style="font-weight: bold;">COCOS_VERSION:</label><br/>')
-                        html.append('<select name="value" style="margin-bottom: 10px; padding: 5px;">')
-                        cocosVersions.each { ver ->
-                            html.append("<option value='${ver}'>${ver}</option>")
+                        html.append('<div style="font-family: var(--font-family-sans); font-size: 14px;">')
+                        
+                        if (BUILD_LIB_COCOS == 'ENABLED') {
+                            html.append('<div style="margin-bottom: 12px;">')
+                            html.append('<select name="value" style="width: 100%; max-width: 300px; padding: 6px; border: 1px solid var(--panel-border-color); border-radius: 4px; background-color: var(--input-color);">')
+                            cocosVersions.each { ver ->
+                                html.append("<option value='${ver}'>${ver}</option>")
+                            }
+                            html.append('</select>')
+                            html.append('</div>')
+                        } else {
+                            html.append('<div style="margin-bottom: 12px; display: flex; align-items: center;">')
+                            html.append('<input type="checkbox" name="value" value="true" style="margin: 0 8px 0 0; width: 16px; height: 16px;">')
+                            html.append('<label style="cursor: pointer;">USE_EMBED_CORE</label>')
+                            html.append('</div>')
                         }
-                        html.append('</select><br/>')
-                    } else {
-                        html.append('<input type="checkbox" name="value" value="true">USE_EMBED_CORE<br/>')
-                    }
 
-                    buildPlatforms.each { plat ->
-                        html.append('<div class="jenkins-form-item tr jenkins-form-item--tight">')
-                        html.append('<div class="setting-main help-sibling">')
-                        html.append('<div name="parameter">')
-                        html.append('<span class="jenkins-checkbox">')
-                        html.append("<input name='value' type='checkbox' value='${plat}'>")
-                        html.append("<label class='attach-previous '>${plat}</label>")
-                        html.append('</span>')
-                        html.append('</div></div></div>')
-                    }
+                        buildPlatforms.each { plat ->
+                            html.append('<div style="margin-bottom: 12px; display: flex; align-items: center;">')
+                            html.append("<input type='checkbox' name='value' value='${plat}' style='margin: 0 8px 0 0; width: 16px; height: 16px;'>")
+                            html.append("<label style='cursor: pointer;'>${plat}</label>")
+                            html.append('</div>')
+                        }
+                        
+                        html.append('</div>')
 
-                    html.append('</div>')
-
-                    return html.toString()
+                        return html.toString()
                     '''
                 ]
             )
