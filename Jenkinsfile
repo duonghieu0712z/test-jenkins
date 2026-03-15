@@ -90,18 +90,18 @@ pipeline {
                         html.append('<label style="font-weight: bold;">COCOS_VERSION:</label><br/>')
                         html.append('<select name="value" style="margin-bottom: 10px; padding: 5px;">')
                         cocosVersions.each { ver ->
-                            // Sử dụng nháy kép để cho phép nội suy biến ${ver}
                             html.append("<option value='${ver}'>${ver}</option>")
                         }
                         html.append('</select><br/>')
                     } else {
-                        html.append('<label style="font-weight: bold;">USE_EMBED_CORE:</label><br/>')
                         html.append('<input type="checkbox" name="value" value="true">USE_EMBED_CORE<br/>')
                     }
 
                     buildPlatforms.each { plat ->
-                        html.append("<label style='font-weight: bold;'>${plat}:</label><br/>")
-                        html.append("<input type='checkbox' name='value' value='${plat}'> ${plat} <br/>")
+                        html.append('<span class = "jenkins-checkbox">')
+                        html.append("<input type='checkbox' name='value' class='  '")
+                        html.append("><label class='attach-previous '>${plat}</label>")
+                        html.append('</span>')
                     }
 
                     html.append('</div>')
