@@ -98,10 +98,14 @@ pipeline {
                     }
 
                     buildPlatforms.each { plat ->
-                        html.append('<span class = "jenkins-checkbox">')
-                        html.append("<input type='checkbox' name='value' class='  '")
-                        html.append("><label class='attach-previous '>${plat}</label>")
+                        html.append('<div class="jenkins-form-item tr jenkins-form-item--tight">')
+                        html.append('<div class="setting-main help-sibling">')
+                        html.append('<div name="parameter">')
+                        html.append('<span class="jenkins-checkbox">')
+                        html.append("<input name='value' type='checkbox' value='${plat}'>")
+                        html.append("<label class='attach-previous '>${plat}</label>")
                         html.append('</span>')
+                        html.append('</div></div></div>')
                     }
 
                     html.append('</div>')
