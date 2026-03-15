@@ -76,36 +76,39 @@ pipeline {
             choiceType: 'ET_FORMATTED_HTML',
             referencedParameters: 'BUILD_LIB_COCOS',
             script: groovyScript(
-                script: '''
-                def cocosVersions = ['v213', 'v373']
-                def buildPlatforms = ['BUILD_IOS', 'BUILD_ANDROID']
+                script: [
+                    sandbox: true,
+                    script: '''
+                    def cocosVersions = ['v213', 'v373']
+                    def buildPlatforms = ['BUILD_IOS', 'BUILD_ANDROID']
 
-                StringBuilder html = new StringBuilder()
+                    StringBuilder html = new StringBuilder()
 
-                html.append('<div style="padding: 10px;">')
+                    html.append('<div style="padding: 10px;">')
 
-                if (BUILD_LIB_COCOS == 'ENABLED') {
-                    html.append('<label style="font-weight: bold;">COCOS_VERSION:</label><br/>')
-                    html.append('<select name="value" style="margin-bottom: 10px; padding: 5px;">')
-                    cocosVersions.each { ver ->
-                        // Sử dụng nháy kép để cho phép nội suy biến ${ver}
-                        html.append("<option value='${ver}'>${ver}</option>")
+                    if (BUILD_LIB_COCOS == 'ENABLED') {
+                        html.append('<label style="font-weight: bold;">COCOS_VERSION:</label><br/>')
+                        html.append('<select name="value" style="margin-bottom: 10px; padding: 5px;">')
+                        cocosVersions.each { ver ->
+                            // Sử dụng nháy kép để cho phép nội suy biến ${ver}
+                            html.append("<option value='${ver}'>${ver}</option>")
+                        }
+                        html.append('</select><br/>')
+                    } else {
+                        html.append('<label style="font-weight: bold;">USE_EMBED_CORE:</label><br/>')
+                        html.append('<input type="checkbox" name="value" value="true">USE_EMBED_CORE<br/>')
                     }
-                    html.append('</select><br/>')
-                } else {
-                    html.append('<label style="font-weight: bold;">USE_EMBED_CORE:</label><br/>')
-                    html.append('<input type="checkbox" name="value" value="true">USE_EMBED_CORE<br/>')
-                }
 
-                buildPlatforms.each { plat ->
-                    html.append("<label style='font-weight: bold;'>${plat}:</label><br/>")
-                    html.append("<input type='checkbox' name='value' value='${plat}'> ${plat} <br/>")
-                }
+                    buildPlatforms.each { plat ->
+                        html.append("<label style='font-weight: bold;'>${plat}:</label><br/>")
+                        html.append("<input type='checkbox' name='value' value='${plat}'> ${plat} <br/>")
+                    }
 
-                html.append('</div>')
+                    html.append('</div>')
 
-                return html.toString()
-                '''
+                    return html.toString()
+                    '''
+                ]
             )
         )
 
