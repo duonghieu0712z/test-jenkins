@@ -54,14 +54,13 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                checkout([
-                    $class: 'scmGit',
+                checkout scmGit(
                     branches: [[name: "*/${params.BRANCH}"]],
                     userRemoteConfigs: [[url: PROJECT_REPO_URL]],
                     extensions: [
                         [$class: 'CloneOption', noTags: false, reference: '', shallow: true, depth: 1, timeout: 4],
                     ],
-                ])
+                )
             }
         }
 
