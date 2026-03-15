@@ -25,7 +25,7 @@ pipeline {
             name: 'BUILD_LIB_COCOS',
             choiceType: 'PT_CHECKBOX',
             script: groovyScript(
-                script: [sandbox: true, script: 'return [\'ENABLED\']']
+                script: [sandbox: true, script: 'return ["ENABLED"]']
             )
         )
         reactiveChoice(
@@ -36,8 +36,8 @@ pipeline {
                 script: [
                     sandbox: true,
                     script: '''
-                    if (BUILD_LIB_COCOS == \'ENABLED\') {
-                        return [\'IOS\', \'ANDROID\']
+                    if (BUILD_LIB_COCOS == "ENABLED") {
+                        return ["IOS", "ANDROID"]
                     }
                     '''
                 ]
@@ -55,7 +55,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout([
-                    $class: 'GitSCM',
+                    $class: 'scmGit',
                     branches: [[name: "*/${params.BRANCH}"]],
                     userRemoteConfigs: [[url: PROJECT_REPO_URL]],
                     extensions: [
