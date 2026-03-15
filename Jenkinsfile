@@ -18,7 +18,7 @@ pipeline {
             sortMode: 'ASCENDING_SMART',
             useRepository: PROJECT_REPO_URL,
             quickFilterEnabled: true,
-            listSize: '5',
+            listSize: '5'
         )
 
         activeChoice(
@@ -28,6 +28,33 @@ pipeline {
                 script: [sandbox: true, script: 'return ["ENABLED"]']
             )
         )
+
+        reactiveChoice(
+            name: 'COCOS_VERSION',
+            choiceType: 'PT_SINGLE_SELECT',
+            referencedParameters: 'BUILD_LIB_COCOS',
+            script: groovyScript(
+                script: [
+                    sandbox: true,
+                    script: '''
+                    if (BUILD_LIB_COCOS == "ENABLED") {
+                        return ["v213", "v373"]
+                    }
+                    '''
+                ]
+            )
+        )
+
+        booleanParam(
+            name: 'BUILD_IOS',
+            defaultValue: false
+        )
+
+        booleanParam(
+            name: 'BUILD_ANDROID',
+            defaultValue: false
+        )
+
         reactiveChoice(
             name: 'BUILD_OPTIONS',
             choiceType: 'PT_CHECKBOX',
@@ -43,6 +70,21 @@ pipeline {
                 ]
             )
         )
+
+        booleanParam(
+            name: 'IS_BUILD_RELEASE',
+            defaultValue: false
+        )
+
+        booleanParam(
+            name: 'SEND_NOTIFICATION',
+            defaultValue: true
+        )
+
+        stringParam(
+            name: 'RELEASE_NOTES',
+            description: 'Release notes',
+        )
     }
 
     stages {
@@ -54,13 +96,14 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                checkout scmGit(
+                checkout([
+                    $class: 'GitSCM',
                     branches: [[name: "*/${params.BRANCH}"]],
                     userRemoteConfigs: [[url: PROJECT_REPO_URL]],
                     extensions: [
                         [$class: 'CloneOption', noTags: false, reference: '', shallow: true, depth: 1, timeout: 4],
-                    ],
-                )
+                    ]
+                ])
             }
         }
 
@@ -80,6 +123,20 @@ pipeline {
 
                     if (params.BUILD_OPTIONS.contains('ANDROID')) {
                         echo 'Building for Android...'
+                    }
+
+                    if (params.IS_BUILD_RELEASE) {
+                        echo 'Building release...'
+                    } else {
+                        echo 'Building debug...'
+                    }
+
+                    if (params.SEND_NOTIFICATION) {
+                        echo 'Sending notification...'
+                    }
+
+                    if (params.RELEASE_NOTES) {
+                        echo "Release notes: ${params.RELEASE_NOTES}"
                     }
                 }
             }
