@@ -63,6 +63,24 @@ pipeline {
                 ])
             }
         }
+
+        stage('Build') {
+            steps {
+                echo "Building branch: ${params.BRANCH}"
+                if (params.BUILD_LIB_COCOS.contains('ENABLED')) {
+                    echo 'Building with Cocos library enabled'
+                } else {
+                    echo 'Building without Cocos library'
+                }
+
+                if (params.CHOICE_REACT.contains('IOS')) {
+                    echo 'Building for iOS'
+                }
+                if (params.CHOICE_REACT.contains('ANDROID')) {
+                    echo 'Building for Android'
+                }
+            }
+        }
     }
 
     post {
